@@ -46,13 +46,13 @@ const Hero = () => {
                 <span className="text-white">whoami</span>
               </div>
               <div className="mb-4 text-cyber-green">
-                > Prashant Khatri
+                {'>'}  Prashant Khatri
               </div>
               <div className="mb-2">
                 <span className="text-white">cat role.txt</span>
               </div>
               <div className="text-cyber-green">
-                > <span className="inline-block">{displayText}</span>
+                {'>'} <span className="inline-block">{displayText}</span>
                 <span className="animate-blink">|</span>
               </div>
             </div>
