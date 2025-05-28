@@ -6,7 +6,7 @@ import { ChevronDown } from 'lucide-react';
 const Hero = () => {
   const [displayText, setDisplayText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
-  const fullText = 'Cybersecurity Expert & Ethical Hacker';
+  const fullText = 'Ethical Hacking & Cybersecurity Student';
 
   useEffect(() => {
     if (currentIndex < fullText.length) {
@@ -38,7 +38,7 @@ const Hero = () => {
               <div className="w-3 h-3 rounded-full bg-red-500"></div>
               <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
               <div className="w-3 h-3 rounded-full bg-green-500"></div>
-              <span className="text-cyber-green text-sm font-fira ml-4">terminal@prashant-khatri:~$</span>
+              <span className="text-cyber-green text-sm font-fira ml-4">student@prashant-khatri:~$</span>
             </div>
             
             <div className="text-left font-fira text-cyber-green">
@@ -46,10 +46,16 @@ const Hero = () => {
                 <span className="text-white">whoami</span>
               </div>
               <div className="mb-4 text-cyber-green">
-                {'>'}  Prashant Khatri
+                {'>'}  Prashant Khatri - BSc Student
               </div>
               <div className="mb-2">
-                <span className="text-white">cat role.txt</span>
+                <span className="text-white">cat current_studies.txt</span>
+              </div>
+              <div className="text-cyber-green mb-4">
+                {'>'} Softwarica College of IT & E-Commerce
+              </div>
+              <div className="mb-2">
+                <span className="text-white">cat specialization.txt</span>
               </div>
               <div className="text-cyber-green">
                 {'>'} <span className="inline-block">{displayText}</span>
@@ -65,13 +71,18 @@ const Hero = () => {
           </h1>
 
           {/* Subtitle */}
-          <p className="text-xl md:text-2xl font-space text-gray-300 mb-8 leading-relaxed">
-            Penetration Tester • Security Researcher • Bug Hunter
+          <p className="text-xl md:text-2xl font-space text-gray-300 mb-4 leading-relaxed">
+            Cybersecurity Student • Aspiring Ethical Hacker • Security Enthusiast
+          </p>
+          
+          {/* Academic info */}
+          <p className="text-lg text-gray-400 mb-8 font-space">
+            BSc Ethical Hacking & Cybersecurity | Softwarica College × Coventry University
           </p>
 
           {/* Skills badges */}
           <div className="flex flex-wrap justify-center gap-3 mb-12">
-            {['Python', 'JavaScript', 'Kali Linux', 'Metasploit', 'Burp Suite', 'OSCP'].map((skill) => (
+            {['Python', 'JavaScript', 'Linux', 'Cybersecurity', 'Networking', 'Web Security'].map((skill) => (
               <span 
                 key={skill}
                 className="px-4 py-2 bg-cyber-navy/60 border border-cyber-green/40 text-cyber-green rounded-full text-sm font-fira hover:bg-cyber-green/10 transition-all duration-300 hover:shadow-lg hover:shadow-cyber-green/20"
@@ -88,7 +99,7 @@ const Hero = () => {
               className="bg-cyber-green text-black hover:bg-cyber-green/80 font-fira font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-cyber-green/20 transition-all duration-300 hover:scale-105"
               onClick={() => scrollToSection('projects')}
             >
-              View My Work
+              View My Projects
             </Button>
             <Button 
               variant="outline"

@@ -9,68 +9,74 @@ const Projects = () => {
   const projects = [
     {
       id: 1,
-      title: 'Advanced SQL Injection Scanner',
-      description: 'Automated tool for detecting SQL injection vulnerabilities with advanced payload generation.',
+      title: 'Password Strength Analyzer',
+      description: 'A Python tool that analyzes password strength and provides security recommendations for better password practices.',
       category: 'tools',
-      techStack: ['Python', 'SQLAlchemy', 'Requests'],
+      techStack: ['Python', 'Tkinter', 'RegEx'],
       githubUrl: '#',
       liveUrl: null,
-      impact: '500+ vulnerabilities detected',
+      level: 'Beginner',
+      learningOutcome: 'Understanding password security principles',
       image: 'https://images.unsplash.com/photo-1518770660439-4636190af475'
     },
     {
       id: 2,
-      title: 'CTF Platform Development',
-      description: 'Custom CTF platform with dynamic flag generation and real-time scoreboard.',
-      category: 'ctf',
-      techStack: ['Node.js', 'React', 'Docker', 'PostgreSQL'],
+      title: 'Network Scanner',
+      description: 'Basic network scanning tool to discover active devices on a network. Built as part of cybersecurity fundamentals course.',
+      category: 'networking',
+      techStack: ['Python', 'Socket Programming', 'Threading'],
       githubUrl: '#',
-      liveUrl: '#',
-      impact: '1000+ participants',
+      liveUrl: null,
+      level: 'Intermediate',
+      learningOutcome: 'Network protocols and socket programming',
       image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6'
     },
     {
       id: 3,
-      title: 'Zero-Day Research: CVE-2023-XXXX',
-      description: 'Discovery and responsible disclosure of a critical vulnerability in popular web framework.',
-      category: 'research',
-      techStack: ['Reverse Engineering', 'Assembly', 'C++'],
+      title: 'Personal Portfolio Website',
+      description: 'Responsive portfolio website built with React and modern web technologies to showcase academic projects and skills.',
+      category: 'web',
+      techStack: ['React', 'TypeScript', 'Tailwind CSS'],
       githubUrl: '#',
-      liveUrl: null,
-      impact: 'CVE assigned',
+      liveUrl: '#',
+      level: 'Intermediate',
+      learningOutcome: 'Modern web development and responsive design',
       image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5'
     },
     {
       id: 4,
-      title: 'Network Traffic Analyzer',
-      description: 'Real-time network monitoring tool with anomaly detection and threat classification.',
-      category: 'tools',
-      techStack: ['Python', 'Scapy', 'TensorFlow', 'Wireshark'],
+      title: 'Basic Vulnerability Scanner',
+      description: 'Simple web vulnerability scanner that checks for common security issues like XSS and SQL injection patterns.',
+      category: 'security',
+      techStack: ['Python', 'Requests', 'BeautifulSoup'],
       githubUrl: '#',
       liveUrl: null,
-      impact: '95% accuracy rate',
+      level: 'Intermediate',
+      learningOutcome: 'Web application security testing',
       image: 'https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7'
     },
     {
       id: 5,
-      title: 'Red Team Exercise Platform',
-      description: 'Comprehensive simulation environment for red team training and assessment.',
-      category: 'ctf',
-      techStack: ['Kubernetes', 'Terraform', 'Ansible'],
+      title: 'Encryption/Decryption Tool',
+      description: 'Educational tool demonstrating various encryption algorithms including Caesar cipher and basic cryptographic concepts.',
+      category: 'crypto',
+      techStack: ['Python', 'Cryptography', 'GUI'],
       githubUrl: '#',
-      liveUrl: '#',
-      impact: '50+ organizations trained',
+      liveUrl: null,
+      level: 'Beginner',
+      learningOutcome: 'Cryptography fundamentals',
       image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b'
     },
     {
       id: 6,
-      title: 'Mobile App Security Framework',
-      description: 'Automated security testing framework for Android and iOS applications.',
-      category: 'tools',
-      techStack: ['Java', 'Swift', 'Frida', 'Burp Suite'],
+      title: 'Study Notes Web App',
+      description: 'A web application for organizing and sharing cybersecurity study notes with fellow students.',
+      category: 'web',
+      techStack: ['HTML', 'CSS', 'JavaScript', 'Local Storage'],
       githubUrl: '#',
-      liveUrl: null,
-      impact: '200+ apps tested',
+      liveUrl: '#',
+      level: 'Beginner',
+      learningOutcome: 'Frontend development and data persistence',
       image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d'
     }
   ];
@@ -82,8 +88,10 @@ const Projects = () => {
   const categories = [
     { id: 'all', label: 'All Projects' },
     { id: 'tools', label: 'Security Tools' },
-    { id: 'ctf', label: 'CTF Platforms' },
-    { id: 'research', label: 'Research' }
+    { id: 'web', label: 'Web Development' },
+    { id: 'networking', label: 'Networking' },
+    { id: 'security', label: 'Security Testing' },
+    { id: 'crypto', label: 'Cryptography' }
   ];
 
   return (
@@ -91,21 +99,22 @@ const Projects = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-fira font-bold text-white mb-4">
-            Featured <span className="text-cyber-green">Projects</span>
+            Academic <span className="text-cyber-green">Projects</span>
           </h2>
           <div className="w-24 h-1 bg-cyber-green mx-auto mb-8"></div>
           <p className="text-xl text-gray-300 font-space max-w-2xl mx-auto">
-            A showcase of my cybersecurity tools, research, and contributions to the security community.
+            A collection of projects completed during my cybersecurity studies, showcasing practical application of security concepts and programming skills.
           </p>
         </div>
 
         {/* Filter buttons */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
+        <div className="flex flex-wrap justify-center gap-3 mb-12">
           {categories.map((category) => (
             <Button
               key={category.id}
               variant={filter === category.id ? 'default' : 'outline'}
-              className={`font-fira ${
+              size="sm"
+              className={`font-fira text-sm ${
                 filter === category.id
                   ? 'bg-cyber-green text-black hover:bg-cyber-green/80'
                   : 'border-cyber-green/40 text-cyber-green hover:bg-cyber-green/10'
@@ -132,9 +141,9 @@ const Projects = () => {
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-cyber-navy to-transparent opacity-60"></div>
-                <div className="absolute bottom-4 left-4">
+                <div className="absolute top-4 left-4">
                   <span className="px-3 py-1 bg-cyber-green/20 border border-cyber-green/40 text-cyber-green text-sm font-fira rounded-full">
-                    {project.category.toUpperCase()}
+                    {project.level}
                   </span>
                 </div>
               </div>
@@ -149,6 +158,13 @@ const Projects = () => {
                   {project.description}
                 </p>
 
+                {/* Learning outcome */}
+                <div className="mb-4">
+                  <p className="text-cyber-green font-fira text-sm">
+                    <span className="text-gray-400">Learning:</span> {project.learningOutcome}
+                  </p>
+                </div>
+
                 {/* Tech stack */}
                 <div className="flex flex-wrap gap-2 mb-4">
                   {project.techStack.map((tech) => (
@@ -159,11 +175,6 @@ const Projects = () => {
                       {tech}
                     </span>
                   ))}
-                </div>
-
-                {/* Impact metric */}
-                <div className="mb-4">
-                  <span className="text-cyber-green font-fira text-sm">Impact: {project.impact}</span>
                 </div>
 
                 {/* Action buttons */}
@@ -182,7 +193,7 @@ const Projects = () => {
                       className="bg-cyber-green text-black hover:bg-cyber-green/80 font-fira flex-1"
                     >
                       <Link className="w-4 h-4 mr-2" />
-                      Live Demo
+                      Demo
                     </Button>
                   )}
                 </div>

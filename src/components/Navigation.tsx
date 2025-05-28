@@ -1,9 +1,11 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { Link, useLocation } from 'react-router-dom';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,6 +17,10 @@ const Navigation = () => {
   }, []);
 
   const scrollToSection = (sectionId: string) => {
+    if (location.pathname !== '/') {
+      window.location.href = `/#${sectionId}`;
+      return;
+    }
     document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -25,26 +31,36 @@ const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="font-fira font-bold text-xl text-cyber-green">
+          <Link to="/" className="font-fira font-bold text-xl text-cyber-green">
             PK<span className="text-white">.</span>
-          </div>
+          </Link>
 
           {/* Navigation links */}
           <div className="hidden md:flex items-center space-x-8">
-            {[
-              { label: 'About', id: 'about' },
-              { label: 'Projects', id: 'projects' },
-              { label: 'Blog', id: 'blog' },
-              { label: 'Contact', id: 'contact' }
-            ].map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className="text-gray-300 hover:text-cyber-green transition-colors duration-300 font-space"
-              >
-                {item.label}
-              </button>
-            ))}
+            <button
+              onClick={() => scrollToSection('about')}
+              className="text-gray-300 hover:text-cyber-green transition-colors duration-300 font-space"
+            >
+              About
+            </button>
+            <button
+              onClick={() => scrollToSection('projects')}
+              className="text-gray-300 hover:text-cyber-green transition-colors duration-300 font-space"
+            >
+              Projects
+            </button>
+            <Link
+              to="/blog"
+              className="text-gray-300 hover:text-cyber-green transition-colors duration-300 font-space"
+            >
+              Blog
+            </Link>
+            <button
+              onClick={() => scrollToSection('contact')}
+              className="text-gray-300 hover:text-cyber-green transition-colors duration-300 font-space"
+            >
+              Contact
+            </button>
           </div>
 
           {/* Mobile menu button */}
