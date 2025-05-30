@@ -2,9 +2,11 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Link, useLocation } from 'react-router-dom';
+import { Menu, X } from 'lucide-react';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -17,6 +19,7 @@ const Navigation = () => {
   }, []);
 
   const scrollToSection = (sectionId: string) => {
+    setIsMobileMenuOpen(false); // Close mobile menu when clicking a link
     if (location.pathname !== '/') {
       window.location.href = `/#${sectionId}`;
       return;
@@ -35,7 +38,7 @@ const Navigation = () => {
             PK<span className="text-white">.</span>
           </Link>
 
-          {/* Navigation links */}
+          {/* Desktop Navigation links */}
           <div className="hidden md:flex items-center space-x-8">
             <button
               onClick={() => scrollToSection('about')}
@@ -67,11 +70,45 @@ const Navigation = () => {
           <Button
             variant="ghost"
             size="sm"
-            className="md:hidden text-cyber-green"
+            className="md:hidden text-cyber-green hover:bg-cyber-green/10"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            Menu
+            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </Button>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden absolute top-16 left-0 right-0 bg-black/95 backdrop-blur-md border-t border-cyber-green/20">
+            <div className="flex flex-col space-y-4 p-4">
+              <button
+                onClick={() => scrollToSection('about')}
+                className="text-gray-300 hover:text-cyber-green transition-colors duration-300 font-space text-left py-2"
+              >
+                About
+              </button>
+              <button
+                onClick={() => scrollToSection('projects')}
+                className="text-gray-300 hover:text-cyber-green transition-colors duration-300 font-space text-left py-2"
+              >
+                Projects
+              </button>
+              <Link
+                to="/blog"
+                className="text-gray-300 hover:text-cyber-green transition-colors duration-300 font-space text-left py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Blog
+              </Link>
+              <button
+                onClick={() => scrollToSection('contact')}
+                className="text-gray-300 hover:text-cyber-green transition-colors duration-300 font-space text-left py-2"
+              >
+                Contact
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
