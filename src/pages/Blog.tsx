@@ -1,16 +1,58 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
+
+interface BlogPost {
+  id: number;
+  title: string;
+  excerpt: string;
+  author_name: string;
+  published_at: string;
+  read_time: number;
+  status: string;
+  featured_image?: string;
+  // Legacy fields for static data compatibility
+  author?: string;
+  publishDate?: string;
+  readTime?: string;
+  category?: string;
+  tags?: string[];
+  image?: string;
+}
 
 const Blog = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const blogPosts = [
+  useEffect(() => {
+    loadBlogPosts();
+  }, []);
+
+  const loadBlogPosts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('id, title, excerpt, author_name, published_at, read_time, status, featured_image')
+        .eq('status', 'published')
+        .order('published_at', { ascending: false });
+
+      if (error) throw error;
+      setBlogPosts(data || []);
+    } catch (error) {
+      console.error('Error loading blog posts:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const staticBlogPosts = [
     {
       id: 1,
       title: 'Getting Started with Ethical Hacking: A Student\'s Journey',
@@ -61,12 +103,15 @@ const Blog = () => {
     }
   ];
 
+  // Use database posts if available, otherwise fall back to static data
+  const allPosts = blogPosts.length > 0 ? blogPosts : staticBlogPosts;
+  
   const categories = ['all', 'Education', 'Technical', 'Projects', 'Career'];
 
-  const filteredPosts = blogPosts.filter(post => {
+  const filteredPosts = allPosts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+                         (post.tags && post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())));
     const matchesCategory = selectedCategory === 'all' || post.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
@@ -114,31 +159,36 @@ const Blog = () => {
       {/* Blog Posts Grid */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPosts.map((post) => (
+          {loading ? (
+            <div className="text-center py-16">
+              <div className="text-cyber-green text-lg font-fira">Loading blog posts...</div>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredPosts.map((post) => (
               <article
                 key={post.id}
                 className="bg-cyber-navy/30 border border-cyber-green/20 rounded-lg overflow-hidden hover:border-cyber-green/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyber-green/10 group"
               >
                 <div className="relative h-48 overflow-hidden">
                   <img
-                    src={post.image}
+                    src={(post as any).featured_image || (post as any).image || 'https://images.unsplash.com/photo-1518770660439-4636190af475'}
                     alt={post.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-cyber-navy to-transparent opacity-60"></div>
                   <div className="absolute top-4 left-4">
                     <span className="px-3 py-1 bg-cyber-green/20 border border-cyber-green/40 text-cyber-green text-sm font-fira rounded-full">
-                      {post.category}
+                      {post.category || 'Article'}
                     </span>
                   </div>
                 </div>
 
                 <div className="p-6">
                   <div className="flex items-center text-sm text-gray-400 font-space mb-3">
-                    <span>{post.publishDate}</span>
+                    <span>{new Date((post as any).published_at || (post as any).publishDate || '').toLocaleDateString()}</span>
                     <span className="mx-2">•</span>
-                    <span>{post.readTime}</span>
+                    <span>{(post as any).read_time || (post as any).readTime || '5'} min read</span>
                   </div>
 
                   <h2 className="text-xl font-fira font-semibold text-white mb-3 group-hover:text-cyber-green transition-colors duration-300">
@@ -151,16 +201,18 @@ const Blog = () => {
                     {post.excerpt}
                   </p>
 
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {post.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-2 py-1 bg-cyber-navy/50 text-cyber-green text-xs font-fira rounded border border-cyber-green/20"
-                      >
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
+                  {post.tags && (
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {post.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-2 py-1 bg-cyber-navy/50 text-cyber-green text-xs font-fira rounded border border-cyber-green/20"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
 
                   <Link to={`/blog/${post.id}`}>
                     <Button
@@ -172,10 +224,11 @@ const Blog = () => {
                   </Link>
                 </div>
               </article>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
-          {filteredPosts.length === 0 && (
+          {!loading && filteredPosts.length === 0 && (
             <div className="text-center py-16">
               <p className="text-gray-400 font-space text-lg">
                 No articles found matching your search criteria.

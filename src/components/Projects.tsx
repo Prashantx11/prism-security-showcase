@@ -1,12 +1,54 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
 import { Github, Link } from 'lucide-react';
+
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  tech_stack: string[];
+  github_url: string;
+  live_url: string;
+  level: string;
+  learning_outcome: string;
+  image_url: string;
+  // Legacy fields for static data compatibility
+  techStack?: string[];
+  githubUrl?: string;
+  liveUrl?: string;
+  learningOutcome?: string;
+  image?: string;
+}
 
 const Projects = () => {
   const [filter, setFilter] = useState('all');
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const projects = [
+  useEffect(() => {
+    loadProjects();
+  }, []);
+
+  const loadProjects = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setProjects(data || []);
+    } catch (error) {
+      console.error('Error loading projects:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const staticProjects = [
     {
       id: 1,
       title: 'Password Strength Analyzer',
@@ -81,9 +123,12 @@ const Projects = () => {
     }
   ];
 
+  // Use database projects if available, otherwise fall back to static data
+  const allProjects = projects.length > 0 ? projects : staticProjects;
+  
   const filteredProjects = filter === 'all' 
-    ? projects 
-    : projects.filter(project => project.category === filter);
+    ? allProjects 
+    : allProjects.filter(project => project.category === filter);
 
   const categories = [
     { id: 'all', label: 'All Projects' },
@@ -128,18 +173,22 @@ const Projects = () => {
 
         {/* Projects grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProjects.map((project) => (
+          {loading ? (
+            <div className="col-span-full text-center py-16">
+              <div className="text-cyber-green text-lg font-fira">Loading projects...</div>
+            </div>
+          ) : filteredProjects.map((project) => (
             <div
               key={project.id}
               className="bg-cyber-navy/30 border border-cyber-green/20 rounded-lg overflow-hidden hover:border-cyber-green/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyber-green/10 group"
             >
               {/* Project image */}
               <div className="relative h-48 overflow-hidden">
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
+                  <img
+                    src={(project as any).image_url || (project as any).image || 'https://images.unsplash.com/photo-1518770660439-4636190af475'}
+                    alt={project.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
                 <div className="absolute inset-0 bg-gradient-to-t from-cyber-navy to-transparent opacity-60"></div>
                 <div className="absolute top-4 left-4">
                   <span className="px-3 py-1 bg-cyber-green/20 border border-cyber-green/40 text-cyber-green text-sm font-fira rounded-full">
@@ -161,13 +210,13 @@ const Projects = () => {
                 {/* Learning outcome */}
                 <div className="mb-4">
                   <p className="text-cyber-green font-fira text-sm">
-                    <span className="text-gray-400">Learning:</span> {project.learningOutcome}
+                    <span className="text-gray-400">Learning:</span> {(project as any).learning_outcome || (project as any).learningOutcome}
                   </p>
                 </div>
 
                 {/* Tech stack */}
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {project.techStack.map((tech) => (
+                  {((project as any).tech_stack || (project as any).techStack || []).map((tech: string) => (
                     <span
                       key={tech}
                       className="px-2 py-1 bg-cyber-navy/50 text-cyber-green text-xs font-fira rounded border border-cyber-green/20"
@@ -183,14 +232,16 @@ const Projects = () => {
                     size="sm"
                     variant="outline"
                     className="border-cyber-green/40 text-cyber-green hover:bg-cyber-green/10 font-fira flex-1"
+                    onClick={() => window.open((project as any).github_url || (project as any).githubUrl || '#', '_blank')}
                   >
                     <Github className="w-4 h-4 mr-2" />
                     Code
                   </Button>
-                  {project.liveUrl && (
+                  {((project as any).live_url || (project as any).liveUrl) && (
                     <Button
                       size="sm"
                       className="bg-cyber-green text-black hover:bg-cyber-green/80 font-fira flex-1"
+                      onClick={() => window.open((project as any).live_url || (project as any).liveUrl || '#', '_blank')}
                     >
                       <Link className="w-4 h-4 mr-2" />
                       Demo
@@ -199,7 +250,7 @@ const Projects = () => {
                 </div>
               </div>
             </div>
-          ))}
+            ))}
         </div>
 
         {/* View more projects button */}

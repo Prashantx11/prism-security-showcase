@@ -2,12 +2,14 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, User, Shield } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, isAdmin, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -64,6 +66,42 @@ const Navigation = () => {
             >
               Contact
             </button>
+            
+            {/* Auth buttons */}
+            <div className="flex items-center space-x-4">
+              {user ? (
+                <>
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      className="text-gray-300 hover:text-cyber-green transition-colors duration-300 font-space flex items-center"
+                    >
+                      <Shield className="w-4 h-4 mr-1" />
+                      Admin
+                    </Link>
+                  )}
+                  <Button
+                    onClick={signOut}
+                    variant="outline"
+                    size="sm"
+                    className="border-cyber-green/40 text-cyber-green hover:bg-cyber-green/10 font-fira"
+                  >
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <Link to="/auth">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-cyber-green/40 text-cyber-green hover:bg-cyber-green/10 font-fira"
+                  >
+                    <User className="w-4 h-4 mr-2" />
+                    Sign In
+                  </Button>
+                </Link>
+              )}
+            </div>
           </div>
 
           {/* Mobile menu button */}
@@ -106,6 +144,44 @@ const Navigation = () => {
               >
                 Contact
               </button>
+              
+              {/* Mobile auth buttons */}
+              <div className="pt-4 border-t border-cyber-green/20">
+                {user ? (
+                  <>
+                    {isAdmin && (
+                      <Link
+                        to="/admin"
+                        className="text-gray-300 hover:text-cyber-green transition-colors duration-300 font-space block mb-3"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <Shield className="w-4 h-4 mr-2 inline" />
+                        Admin Dashboard
+                      </Link>
+                    )}
+                    <Button
+                      onClick={() => {
+                        signOut();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      variant="outline"
+                      className="border-cyber-green/40 text-cyber-green hover:bg-cyber-green/10 font-fira w-full"
+                    >
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button
+                      variant="outline"
+                      className="border-cyber-green/40 text-cyber-green hover:bg-cyber-green/10 font-fira w-full"
+                    >
+                      <User className="w-4 h-4 mr-2" />
+                      Sign In
+                    </Button>
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         )}
